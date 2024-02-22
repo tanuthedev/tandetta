@@ -3,8 +3,11 @@ import { findByDisplayName, findByName, findByProps } from "@metro/filters";
 
 // Discord
 export const Forms = findByProps("Form", "FormSection");
+export const { TableRowGroup, TableSwitchRow, TableRowIcon, TableRow, TextInput, TableCheckboxRow, IconButton, TableRadioRow } = findByProps("TableRowGroup");
+export const { ActionButton } = findByProps("ActionButton")
 export const General = findByProps("Button", "Text", "View");
 export const Alert = findByDisplayName("FluxContainer(Alert)");
+export const { Image } = RN;
 export const Button = findByProps("Looks", "Colors", "Sizes") as React.ComponentType<any> & { Looks: any, Colors: any, Sizes: any };
 export const HelpMessage = findByName("HelpMessage");
 // React Native's included SafeAreaView only adds padding on iOS.

@@ -11,7 +11,18 @@ type MetroModules = { [id: number]: any };
 // Component types
 interface SummaryProps {
     label: string;
+    subLabel?: string;
     icon?: string;
+    noPadding?: boolean;
+    noAnimation?: boolean;
+    children: JSX.Element | JSX.Element[];
+}
+
+interface SwitchSummaryProps {
+    label: string;
+    subLabel?: string;
+    icon?: string;
+    condition: boolean;
     noPadding?: boolean;
     noAnimation?: boolean;
     children: JSX.Element | JSX.Element[];
@@ -151,11 +162,23 @@ interface Theme {
 interface Settings {
     debuggerUrl: string;
     developerSettings: boolean;
+    disableCustomAnimations: boolean;
+    experiments: boolean;
+    disableBadges: boolean;
+    disableForcedThemeReload: boolean;
     safeMode?: {
         enabled: boolean;
         currentThemeId?: string;
     };
 }
+
+export interface BadgeComponents {
+    name: string;
+    image: string;
+    size: number;
+    margin: number;
+    key: string;
+  }
 
 interface ApplicationCommand {
     description: string;
@@ -511,7 +534,8 @@ interface VendettaPluginObject {
 
 declare global {
     type React = typeof _React;
-    const __vendettaVersion: string;
+    const __tandettaVersion: string;
+    const __tandettaChannel: string;
 
     interface Window {
         [key: PropertyKey]: any;

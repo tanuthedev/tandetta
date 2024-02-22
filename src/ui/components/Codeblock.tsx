@@ -10,7 +10,7 @@ const styles = stylesheet.createThemedStyleSheet({
         backgroundColor: semanticColors.BACKGROUND_SECONDARY,
         color: semanticColors.TEXT_NORMAL,
         borderWidth: 1,
-        borderRadius: 4,
+        borderRadius: 16,
         borderColor: semanticColors.BACKGROUND_TERTIARY,
         padding: 10,
     },

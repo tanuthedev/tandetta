@@ -59,7 +59,7 @@ export function patchLogHook() {
     }
 }
 
-export const versionHash: string = __vendettaVersion;
+export const versionId: string = __tandettaVersion;
 
 export function getDebugInfo() {
     // Hermes
@@ -73,8 +73,9 @@ export function getDebugInfo() {
 
     return {
         vendetta: {
-            version: versionHash,
+            version: versionId,
             loader: window.__vendetta_loader?.name ?? "Unknown",
+            channel: __tandettaChannel
         },
         discord: {
             version: ClientInfoManager.Version,

@@ -1,17 +1,34 @@
 import { SearchProps } from "@types";
 import { stylesheet } from "@metro/common";
-import { findByName } from "@metro/filters";
+import { findByName, findByProps } from "@metro/filters";
+import { ReactNative as RN } from "@metro/common";
+import { Forms, TextInput } from "@ui/components";
+import ErrorBoundary from "@ui/components/ErrorBoundary";
+import { getAssetIDByName } from "@ui/assets";
+const { FormIcon } = findByProps("FormIcon");
 
-const Search = findByName("StaticSearchBarContainer");
 
-const styles = stylesheet.createThemedStyleSheet({
-    search: {
-        margin: 0,
-        padding: 0,
-        borderBottomWidth: 0,
-        background: "none",
-        backgroundColor: "none",
+export default ({ onChangeText, placeholder, style }: SearchProps) => {
+    function SearchIcon() {
+        return <RN.Image style={{ transform: [{ scale: 0.8 }]}} source={getAssetIDByName("search")} />
     }
-});
-
-export default ({ onChangeText, placeholder, style }: SearchProps) => <Search style={[styles.search, style]} placeholder={placeholder} onChangeText={onChangeText} />
+    const [query, setQuery] = React.useState("");
+    const onChange = (value: string) => {
+        setQuery(value);
+        onChangeText?.(value);
+    }
+    return <ErrorBoundary>
+        <RN.View style={style}>
+            <TextInput isClearable grow
+                leadingIcon={SearchIcon}
+                placeholder={"Search"}
+                onChange={onChange}
+                returnKeyType={"search"}
+                size="md"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={query}
+            />
+        </RN.View>
+    </ErrorBoundary>
+}

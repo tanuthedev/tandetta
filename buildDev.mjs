@@ -18,8 +18,8 @@ console.log(date)
 try {
     await build({
         entryPoints: ["./src/entry.ts"],
-        outfile: "./dist/tandetta.js",
-        minify: true,
+        outfile: "./dist/tandetta.dev.js",
+        minify: false,
         bundle: true,
         format: "iife",
         target: "esnext",
@@ -48,8 +48,8 @@ try {
             alias(aliases),
         ],
         define: {
-            __tandettaVersion: `"S${date}"`,
-            __tandettaChannel: `"STABLERELEASE"`
+            __tandettaVersion: `"D${date}"`,
+            __tandettaChannel: `"DEVELOPEMENT"`
         },
         footer: {
             js: "//# sourceURL=Tandetta",

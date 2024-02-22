@@ -9,6 +9,7 @@ import { getAssetIDByName } from "@ui/assets";
 import settings from "@lib/settings";
 import ErrorBoundary from "@ui/components/ErrorBoundary";
 import InstallButton from "@ui/settings/components/InstallButton";
+import ReloadButton from "@ui/settings/components/ReloadButton";
 import General from "@ui/settings/pages/General";
 import Plugins from "@ui/settings/pages/Plugins";
 import Themes from "@ui/settings/pages/Themes";
@@ -51,7 +52,7 @@ export const getScreens = (youKeys = false): Screen[] => [
                         if (!input.startsWith(PROXY_PREFIX) && !settings.developerSettings)
                             setImmediate(() => showConfirmationAlert({
                                 title: "Unproxied Plugin",
-                                content: "The plugin you are trying to install has not been proxied/verified by Vendetta staff. Are you sure you want to continue?",
+                                content: "The plugin you are trying to install has not been proxied/verified by Tandetta staff. Are you sure you want to continue?",
                                 confirmText: "Install",
                                 onConfirm: () =>
                                     installPlugin(input)
@@ -73,7 +74,7 @@ export const getScreens = (youKeys = false): Screen[] => [
         // TODO: bad
         shouldRender: () => window.__vendetta_loader?.features.hasOwnProperty("themes") ?? false,
         options: {
-            headerRight: () => !settings.safeMode?.enabled && <InstallButton alertTitle="Install Theme" installFunction={installTheme} />,
+            headerRight: () => !settings.safeMode?.enabled && <InstallButton hasReload={true} alertTitle="Install Theme" installFunction={installTheme} />,
         },
         render: Themes,
     },
@@ -86,7 +87,7 @@ export const getScreens = (youKeys = false): Screen[] => [
     },
     {
         key: formatKey("VendettaCustomPage", youKeys),
-        title: "Vendetta Page",
+        title: "Tandetta",
         shouldRender: () => false,
         render: ({ render: PageView, noErrorBoundary, ...options }: { render: React.ComponentType; noErrorBoundary: boolean } & Record<string, object>) => {
             const navigation = NavigationNative.useNavigation();
@@ -111,7 +112,7 @@ export const getYouData = () => {
     return {
         getLayout: () => ({
             title: "Vendetta",
-            label: "Vendetta",
+            label: "Tandetta",
             // We can't use our keyMap function here since `settings` is an array not an object
             settings: getRenderableScreens(true).map(s => s.key)
         }),

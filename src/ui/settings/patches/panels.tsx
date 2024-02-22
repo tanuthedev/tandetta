@@ -19,7 +19,7 @@ export default function patchPanels() {
     after("default", settingsModule, (_, ret) => {
         const Overview = findInReactTree(ret.props.children, i => i.type && i.type.name === "UserSettingsOverview");
 
-        // Upload logs button gone
+        // Upload logs button be gone
         patches.push(after("renderSupportAndAcknowledgements", Overview.type.prototype, (_, { props: { children } }) => {
             const index = children.findIndex((c: any) => c?.type?.name === "UploadLogsButton");
             if (index !== -1) children.splice(index, 1);

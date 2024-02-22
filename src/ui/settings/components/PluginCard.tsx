@@ -28,6 +28,7 @@ export default function PluginCard({ item: plugin, index }: CardWrapper<Plugin>)
             headerLabel={`${plugin.manifest.name} by ${plugin.manifest.authors.map(i => i.name).join(", ")}`}
             headerIcon={plugin.manifest.vendetta?.icon || "ic_application_command_24px"}
             toggleType="switch"
+            hasSettings={(settings ? true : false)}
             toggleValue={plugin.enabled}
             onToggleChange={(v: boolean) => {
                 try {
@@ -39,6 +40,14 @@ export default function PluginCard({ item: plugin, index }: CardWrapper<Plugin>)
             descriptionLabel={plugin.manifest.description}
             overflowTitle={plugin.manifest.name}
             overflowActions={[
+                ...(settings ? [{
+                    label: "Plugin Settings",
+                    icon: "ic_settings_white_24px",
+                    onPress: () => navigation.push("VendettaCustomPage", {
+                        title: plugin.manifest.name,
+                        render: settings,
+                    })
+                }] : []),
                 {
                     icon: "ic_sync_24px",
                     label: "Refetch",

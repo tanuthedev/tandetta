@@ -3,15 +3,17 @@
     "version": "1.0.0",
     "description": "A mod for Discord's mobile apps.",
     "scripts": {
-        "build": "node build.mjs"
+        "buildRelease": "node build.mjs",
+        "build": "node buildDev.mjs"
     },
+    
     "keywords": [
         "discord",
         "android",
         "ios",
         "react native"
     ],
-    "author": "Beef",
+    "author": "Tanu, previously Beef",
     "license": "BSD-3-Clause",
     "devDependencies": {
         "@react-native-clipboard/clipboard": "1.10.0",

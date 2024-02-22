@@ -5,8 +5,12 @@ import { useProxy } from "@lib/storage";
 import { BundleUpdaterManager } from "@lib/native";
 import { getAssetIDByName } from "@ui/assets";
 import { Forms, Summary, ErrorBoundary } from "@ui/components";
+import { TableRowGroup, TableSwitchRow, TableRowIcon, TableRow } from "@ui/components";
+import { ModernTableRowGroup } from "@/ui/components/ModernTableRow";
+import LineDivider from "@ui/components/LineDivider";
 import settings from "@lib/settings";
 import Version from "@ui/settings/components/Version";
+import { showConfirmationAlert } from "@ui/alerts";
 
 const { FormRow, FormSwitchRow, FormSection, FormDivider } = Forms;
 const debugInfo = getDebugInfo();
@@ -16,9 +20,14 @@ export default function General() {
 
     const versions = [
         {
-            label: "Vendetta",
+            label: "Build",
             version: debugInfo.vendetta.version,
             icon: "ic_progress_wrench_24px",
+        },
+        {
+            label: "Release\nChannel",
+            version: `${__tandettaChannel}`,
+            icon: "ic_stage_channel_24px",
         },
         {
             label: "Discord",
@@ -56,7 +65,7 @@ export default function General() {
         ...(debugInfo.os.sdk ? [{
             label: "SDK",
             version: debugInfo.os.sdk,
-            icon: "ic_profile_badge_verified_developer_color"
+            icon: "ic_behavior_24px"
         }] : []),
         {
             label: "Manufacturer",
@@ -83,46 +92,79 @@ export default function General() {
     return (
         <ErrorBoundary>
             <RN.ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 38 }}>
-                <FormSection title="Links" titleStyleType="no_border">
-                    <FormRow
+                <ModernTableRowGroup title="Links">
+                    <TableRow
                         label="Discord Server"
-                        leading={<FormRow.Icon source={getAssetIDByName("Discord")} />}
-                        trailing={FormRow.Arrow}
+                        icon={<FormRow.Icon source={getAssetIDByName("Discord")} />}
+                        trailing={<FormRow.Arrow/>}
                         onPress={() => url.openDeeplink(DISCORD_SERVER)}
                     />
-                    <FormDivider />
+                    {/*<FormDivider />
                     <FormRow
                         label="GitHub"
                         leading={<FormRow.Icon source={getAssetIDByName("img_account_sync_github_white")} />}
                         trailing={FormRow.Arrow}
                         onPress={() => url.openURL(GITHUB)}
-                    />
-                </FormSection>
-                <FormSection title="Actions">
-                    <FormRow
+                    />*/}
+                </ModernTableRowGroup>
+                <ModernTableRowGroup title="Actions">
+                    <TableRow
                         label="Reload Discord"
-                        leading={<FormRow.Icon source={getAssetIDByName("ic_message_retry")} />}
+                        icon={<FormRow.Icon source={getAssetIDByName("ic_message_retry")} />}
                         onPress={() => BundleUpdaterManager.reload()}
                     />
                     <FormDivider />
-                    <FormRow
+                    <TableRow
                         label={settings.safeMode?.enabled ? "Return to Normal Mode" : "Reload in Safe Mode"}
                         subLabel={`This will reload Discord ${settings.safeMode?.enabled ? "normally." : "without loading plugins."}`}
-                        leading={<FormRow.Icon source={getAssetIDByName("ic_privacy_24px")} />}
+                        icon={<FormRow.Icon source={getAssetIDByName("ic_privacy_24px")} />}
                         onPress={toggleSafeMode}
                     />
-                    <FormDivider />
-                    <FormSwitchRow
-                        label="Developer Settings"
-                        leading={<FormRow.Icon source={getAssetIDByName("ic_progress_wrench_24px")} />}
-                        value={settings.developerSettings}
-                        onValueChange={(v: boolean) => {
-                            settings.developerSettings = v;
-                        }}
+                </ModernTableRowGroup>
+                <ModernTableRowGroup title='Other'>
+                    <TableSwitchRow
+                            label="Tandetta Badges"
+                            subLabel="Tandetta badges are in the works. Until then, this toggle will stay disabled."
+                            icon={<FormRow.Icon source={getAssetIDByName("ic_nitro_rep_24px")} />}
+                            disabled={true}
+                            value={!settings.disableBadges}
+                            onValueChange={(v: boolean) => {
+                                settings.disableBadges = v;
+                            }}
                     />
-                </FormSection>
-                <FormSection title="Info">
-                    <Summary label="Versions" icon="ic_information_filled_24px">
+                    <TableSwitchRow
+                            label="Toggle Developer Settings"
+                            subLabel="Don't mess up anything. Good luck!"
+                            icon={<FormRow.Icon source={getAssetIDByName("ic_progress_wrench_24px")} />}
+                            value={settings.developerSettings}
+                            onValueChange={(v: boolean) => {
+                                settings.developerSettings = v;
+                            }}
+                    />
+                        <TableSwitchRow
+                            label="Toggle Experiments"
+                            subLabel="This also enables other Staff-only functionality."
+                            icon={<FormRow.Icon source={getAssetIDByName("ic_wand")} />}
+                            value={settings.experiments}
+                            onValueChange={(v: boolean) => {
+                                settings.experiments = v;
+                                showConfirmationAlert({
+                                    title: "Hey there, wait a second!",
+                                    content: "Toggling experiments requires restarting Discord. Would you like to do that now?",
+                                    confirmText: "Sure!",
+                                    cancelText: "Nah, not now.",
+                                    // @ts-expect-error oh god
+                                    confirmColor: "brand",
+                                    onConfirm: BundleUpdaterManager.reload,
+                                    /*onCancel: () => {
+                                        settings.experiments = !v
+                                    }*/
+                                });
+                            }}
+                    />
+                </ModernTableRowGroup>
+                <ModernTableRowGroup title="About">
+                    <Summary label="Tandetta" icon="ic_information_filled_24px">
                         {versions.map((v, i) => (
                             <>
                                 <Version label={v.label} version={v.version} icon={v.icon} />
@@ -130,7 +172,7 @@ export default function General() {
                             </>
                         ))}
                     </Summary>
-                    <FormDivider />
+                    {/*<LineDivider addPadding={true} />*/}
                     <Summary label="Platform" icon="ic_mobile_device">
                         {platformInfo.map((p, i) => (
                             <>
@@ -139,7 +181,7 @@ export default function General() {
                             </>
                         ))}
                     </Summary>
-                </FormSection>
+                </ModernTableRowGroup>
             </RN.ScrollView>
         </ErrorBoundary>
     )

@@ -6,6 +6,8 @@ const ThemeManager = findByProps("updateTheme", "overrideTheme");
 const AMOLEDThemeManager = findByProps("setAMOLEDThemeEnabled");
 const ThemeStore = findByStoreName("ThemeStore");
 const UnsyncedUserSettingsStore = findByStoreName("UnsyncedUserSettingsStore");
+const { getCurrentUser } = findByStoreName("UserStore");
+const { getSerializedState } = findByProps("getSerializedState");
 
 function onDispatch({ locale }: { locale: string }) {
     // Theming

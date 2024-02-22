@@ -1,6 +1,6 @@
 import { ButtonColors, Theme } from "@types";
 import { clipboard } from "@metro/common";
-import { fetchTheme, removeTheme, selectTheme } from "@lib/themes";
+import { fetchTheme, removeTheme, selectTheme, themes } from "@lib/themes";
 import { useProxy } from "@lib/storage";
 import { BundleUpdaterManager } from "@lib/native";
 import { getAssetIDByName } from "@ui/assets";
@@ -9,9 +9,13 @@ import { showToast } from "@ui/toasts";
 import settings from "@lib/settings";
 import Card, { CardWrapper } from "@ui/settings/components/Card";
 
-async function selectAndReload(value: boolean, id: string) {
+async function selectAndApply(value: boolean, id: string) {
     await selectTheme(value ? id : "default");
-    BundleUpdaterManager.reload();
+    if(settings.disableForcedThemeReload) {
+        showToast("Auto-reload disabled. To apply changes, please reload.", getAssetIDByName("ic_message_retry"));
+    } else {
+        BundleUpdaterManager.reload();
+    }
 }
 
 export default function ThemeCard({ item: theme, index }: CardWrapper<Theme>) {
@@ -29,9 +33,10 @@ export default function ThemeCard({ item: theme, index }: CardWrapper<Theme>) {
             headerLabel={`${theme.data.name} ${authors ? `by ${authors.map(i => i.name).join(", ")}` : ""}`}
             descriptionLabel={theme.data.description ?? "No description."}
             toggleType={!settings.safeMode?.enabled ? "radio" : undefined}
+            headerIcon={"ic_theme_24px"}
             toggleValue={theme.selected}
             onToggleChange={(v: boolean) => {
-                selectAndReload(v, theme.id);
+                selectAndApply(v, theme.id);
             }}
             overflowTitle={theme.data.name}
             overflowActions={[
@@ -42,7 +47,7 @@ export default function ThemeCard({ item: theme, index }: CardWrapper<Theme>) {
                         fetchTheme(theme.id, theme.selected).then(() => {
                             if (theme.selected) {
                                 showConfirmationAlert({
-                                    title: "Theme refetched",
+                                    title: "Theme refetched!",
                                     content: "A reload is required to see the changes. Do you want to reload now?",
                                     confirmText: "Reload",
                                     cancelText: "Cancel",
@@ -78,7 +83,7 @@ export default function ThemeCard({ item: theme, index }: CardWrapper<Theme>) {
                         onConfirm: () => {
                             removeTheme(theme.id).then((wasSelected) => {
                                 setRemoved(true);
-                                if (wasSelected) selectAndReload(false, theme.id);
+                                if (wasSelected) selectAndApply(false, theme.id);
                             }).catch((e: Error) => {
                                 showToast(e.message, getAssetIDByName("Small"));
                             });
